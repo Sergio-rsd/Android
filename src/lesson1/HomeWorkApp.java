@@ -1,7 +1,6 @@
 package lesson1;
 
 //1. Создать пустой проект в IntelliJ IDEA, создать класс HomeWorkApp, и прописать в нем метод main().
-
 public class HomeWorkApp {
     public static void main(String[] args) {
         String[] words = {"Orange", "Banana", "Apple"};
