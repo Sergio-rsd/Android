@@ -14,7 +14,7 @@ public class GuessWord {
         "mushroom", "nut", "olive", "pea", "peanut", "pear", "pepper", "pineapple", "pumpkin",
         "potato"};
     // компютер загадывает слово
-    int randomIndexWord = (int) (Math.random() * (arrayWords.length - 1));
+    int randomIndexWord = (int) (Math.random() * (arrayWords.length + 1));
     System.out.println(arrayWords[randomIndexWord]);
     String magicWord = arrayWords[randomIndexWord];
 
