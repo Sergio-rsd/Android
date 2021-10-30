@@ -7,10 +7,13 @@ public class TicTacToe {
 
   // блок настроек игры
   private static char[][] map; // матрица игры
-  private static final int SIZE = 3; // размер поля
+  private static int SIZE = 3; // размер поля
+  private static int CHIPS = 3; // количество фишек
   private static final char DOT_EMPTY = '•'; //пустое простанство
   private static final char DOT_X = 'X'; // крестик
   private static final char DOT_O = 'O'; // нолик
+  //  private static final String HEADER_FIRST_MAP = "♥";
+  private static final String SPACE_MAP = " ";
 
   private static final Scanner scanner = new Scanner(System.in);
   private static final Random random = new Random();
@@ -18,6 +21,7 @@ public class TicTacToe {
 //    private static final boolean SILLY_MODE = true; // тупой ПК
 
   public static void main(String[] args) {
+    initGame();
     initMap();
     printMap();
 
@@ -35,6 +39,28 @@ public class TicTacToe {
     System.out.println("Игра закончена");
   }
 
+  private static void initGame() {
+    System.out.println("Начинаем игру в крестики нолики!");
+    System.out.println("Укажите размер поля для игры (по умолчанию лучше оставить 3X3)");
+    SIZE = numberCheck();
+    setTheNumberOfChips();
+  }
+
+  private static void setTheNumberOfChips() {
+    System.out.println("Укажите количество победных фишек (для поля 3X3 - 3 фишки)\nВсе равно поставим нужное количество :-)");
+    CHIPS = numberCheck();
+    if (SIZE >= 3 && SIZE <= 5) {
+      CHIPS = 3;
+    } else if (SIZE >= 6 && SIZE <= 10) {
+      CHIPS = 4;
+    } else if (SIZE >= 11) {
+      CHIPS = 5;
+    } else {
+      CHIPS = 3;
+    }
+    System.out.println("Выбрано количество фишек " + CHIPS);
+  }
+
   // Метод подготовки поля
   private static void initMap() {
     map = new char[SIZE][SIZE];
@@ -47,44 +73,32 @@ public class TicTacToe {
 
   // метод вывода игрового поля - оптимизирован
   private static void printMap() {
-    // вроде оптимизирована
 
     for (int i = 0, k = 0; i < SIZE; i++, k++) {
       if (k == 1) {
         i = 0;
       }
-      System.out.print(k + " ");
+      System.out.print(k + SPACE_MAP);
       for (int j = 0; j < SIZE; j++) {
-        System.out.print(k == 0 ? j + 1 + " " : map[i][j] + " ");
+        System.out.print(k == 0 ? j + 1 + SPACE_MAP : map[i][j] + SPACE_MAP);
       }
       System.out.println();
     }
   }
 
-//  private static void printMap(int[][] elMap) {
-//    // для проверки образа map
-//
-//    for (int i = 0, k = 0; i < SIZE; i++, k++) {
-//      if (k == 1) {
-//        i = 0;
-//      }
-//      System.out.print(k + " ");
-//      for (int j = 0; j < SIZE; j++) {
-//        System.out.print(k == 0 ? j + 1 + " " : elMap[i][j] + " ");
-//      }
-//      System.out.println();
-//    }
-//  }
-
   //ход человека
   private static void humanTurn() {
     int x, y;
+
     do {
-      System.out.println("Введите координаты ячейки (X Y)");
-      y = scanner.nextInt() - 1; // Считывание номера строки
-      x = scanner.nextInt() - 1; // Считывание номера столбца
+      System.out.print("Введите координаты ячейки по вертикали (X) ");
+      y = isCellValid(numberCheck()) - 1; // Считывание номера строки
+      System.out.print("Введите координаты ячейки по горизонтали (Y) ");
+      x = isCellValid(numberCheck()) - 1; // Считывание номера столбца
+
     }
     while (isCellValid(x, y));
+    // смотрим
     map[y][x] = DOT_X;
   }
 
@@ -108,31 +122,24 @@ public class TicTacToe {
       for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
           // проверка клеток по направлениям
-/*          if (map[i][j] != DOT_EMPTY) {
+          // проверка на пустую клетку - занято
 
-            // проверка на пустую клетку - занято
-            continue; // ищем пустую дальше
-          } else*/
           if (map[i][j] == DOT_EMPTY) { // клетка свободна
             // проверка на соседний знак хода ПК
             // обозначаем квадрат поисков в одну ячейку рядом
             minY = searchQuadrantMin(i - 1);
             minX = searchQuadrantMin(j - 1);
-            maxY = searchCvadrantMax(i);
-            maxX = searchCvadrantMax(j);
+            maxY = searchQuadrantMax(i);
+            maxX = searchQuadrantMax(j);
             for (int k = minY; k < maxY; k++) {
               for (int l = minX; l < maxX; l++) {
                 if (map[k][l] == map[i][j]) { // соседняя клетка своя
-
                   // фиксируем координаты
                   y = i;
                   x = j;
                   flagChek = true;
                   break;
                 }
-/*                else {
-                  continue; // ищем похожую дальше
-                }*/
               }
               if (flagChek) {
                 break;
@@ -154,8 +161,6 @@ public class TicTacToe {
         } while (isCellValid(x, y));
       }
     }
-    // проверка заполнения проверочной таблицы для хода ПК
-
     System.out.println("Компьютер выбрал ячейку " + (y + 1) + " " + (x + 1));
     map[y][x] = DOT_O;
 
@@ -169,7 +174,7 @@ public class TicTacToe {
     }
   }
 
-  public static int searchCvadrantMax(int el) {
+  public static int searchQuadrantMax(int el) {
     if (el == 0) {
       return 1;
     } else {
@@ -178,14 +183,44 @@ public class TicTacToe {
   }
 
   // Метод валидации корректного ввода координат
-  public static boolean isCellValid(int x, int y) {
-    boolean result = x >= 0 && x < SIZE && y >= 0 && y < SIZE;
+  // на ввод символа
+  public static int numberCheck() {
+    while (true) {
+      if (scanner.hasNextInt()) {
+        return scanner.nextInt();
+      } else {
+        scanner.next();
+        System.out.println("Введите число");
+      }
+    }
+  }
 
-    if (map[y][x] != DOT_EMPTY) {
-      result = false;
+  // на цифру в диапазоне
+  // проверка на диапазон для хода человека (одно значение)
+  private static int isCellValid(int el) {
+    while (true) {
+      if (el >= 0 && el <= SIZE) {
+        return el;
+      } else {
+        scanner.nextLine();
+        System.out.println("Введите цифры от 1 до " + SIZE);
+        el = numberCheck();
+      }
     }
 
-    return !result;
+  }
+
+  public static boolean isCellValid(int x, int y) {
+    boolean result = false;
+    if (!(x >= 0 && x < SIZE && y >= 0 && y < SIZE)) {
+      System.out.println("Введите цифры от 1 до " + SIZE);
+      return true;
+    }
+    if (map[y][x] != DOT_EMPTY) {
+      result = true;
+    }
+
+    return result;
   }
 
   // Метод проверки игры на завершение
@@ -221,30 +256,7 @@ public class TicTacToe {
 
   // Метод проверки победы в игре
   // Всего 8 комбинаций
-/*  private static boolean checkWin(char playerSymbol) {
-    boolean result = false;
-
-    if (
-        (map[0][0] == playerSymbol && map[0][1] == playerSymbol && map[0][2] == playerSymbol) ||
-            (map[1][0] == playerSymbol && map[1][1] == playerSymbol && map[1][2] == playerSymbol) ||
-            (map[2][0] == playerSymbol && map[2][1] == playerSymbol && map[2][2] == playerSymbol) ||
-            (map[0][0] == playerSymbol && map[1][0] == playerSymbol && map[2][0] == playerSymbol) ||
-            (map[0][1] == playerSymbol && map[1][1] == playerSymbol && map[2][1] == playerSymbol) ||
-            (map[0][2] == playerSymbol && map[1][2] == playerSymbol && map[2][2] == playerSymbol) ||
-            (map[0][0] == playerSymbol && map[1][1] == playerSymbol && map[2][2] == playerSymbol) ||
-            (map[2][0] == playerSymbol && map[1][1] == playerSymbol && map[0][2] == playerSymbol)) {
-      result = true;
-    }
-
-    return result;
-  }*/
-
-  // --
-  //       Можно еще так сделать проверку на победу:
-  //**
-//     * Проверка выйгрышных комбинаций компьтера, или человека
-//     * @param playerSymbol символ игрока, или компьютера для проверки
-//     * @return true or false
+  // -- вроде работает
 
   public static boolean checkWin(char playerSymbol) {
     boolean checkLine, checkColumns, checkDiagonalA, checkDiagonalB;
@@ -265,7 +277,5 @@ public class TicTacToe {
     }
     return false;
   }
-  // --
-
 
 }
