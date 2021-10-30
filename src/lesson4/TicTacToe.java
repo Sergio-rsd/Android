@@ -14,13 +14,10 @@ public class TicTacToe {
   private static final char DOT_O = 'O'; // нолик
   //  private static final String HEADER_FIRST_MAP = "♥";
   private static final String SPACE_MAP = " ";
-  private static int lastRowTurn = -1;
-  private static int lastColumnTurn = -1;
-
 
   private static final Scanner scanner = new Scanner(System.in);
   private static final Random random = new Random();
-  private static final boolean SILLY_MODE = false; // так себе, но тупой ПК
+  private static final boolean SILLY_MODE = false;
 //    private static final boolean SILLY_MODE = true; // тупой ПК
 
   public static void main(String[] args) {
@@ -50,9 +47,8 @@ public class TicTacToe {
   }
 
   private static void setTheNumberOfChips() {
-    System.out.println(
-        "Укажите количество победных фишек (для поля 3X3 - 3 фишки)\nВсе равно поставим нужное количество :-)");
-
+    System.out.println("Укажите количество победных фишек (для поля 3X3 - 3 фишки)\nВсе равно поставим нужное количество :-)");
+    CHIPS = numberCheck();
     if (SIZE >= 3 && SIZE <= 5) {
       CHIPS = 3;
     } else if (SIZE >= 6 && SIZE <= 10) {
@@ -103,8 +99,6 @@ public class TicTacToe {
     }
     while (isCellValid(x, y));
     // смотрим
-    lastRowTurn = y;
-    lastColumnTurn = x;
     map[y][x] = DOT_X;
   }
 
@@ -168,8 +162,6 @@ public class TicTacToe {
       }
     }
     System.out.println("Компьютер выбрал ячейку " + (y + 1) + " " + (x + 1));
-    lastRowTurn = y;
-    lastColumnTurn = x;
     map[y][x] = DOT_O;
 
   }
@@ -236,9 +228,10 @@ public class TicTacToe {
     boolean result = false;
     printMap();
     // проверка необходимости следующего хода
-    if (checkWin()) {
+    if (checkWin(playerSymbol)) {
       System.out.println("Победа за " + playerSymbol);
-      return true;
+      result = true;
+      return result;
     }
     if (isMapFull()) {
       System.out.println("Ничья, увы...");
@@ -261,83 +254,25 @@ public class TicTacToe {
     return result;
   }
 
-  // проверка на победу для любого поля и любых фишек
-  public static boolean checkWin() {
-    System.out.println("Координаты последнего хода " + lastRowTurn + " " + lastColumnTurn);
+  // Метод проверки победы в игре
+  // Всего 8 комбинаций
+  // -- вроде работает
 
-    return checkWinAll();
-  }
-
-  private static boolean checkWinAll() {
-
-//Проход по всему полю (расчет ведется для каждой клетки)
-    for (int i = 0; i < SIZE; i++) {
-      for (int j = 0; j < SIZE; j++) {
-//Пропускаем пустую клетку
-        if (map[i][j] == DOT_EMPTY) {
-          continue;
-        }
-        char tempCell = map[i][j];  //Значение текущей клетки
-
-        int countWin; //Текущая длина ряда
-
-        int additionalCount;  //Доп. счетчик
-//Смотрим вправо от текущей клетки
-        countWin = 0;
-        for (int k = j; k < j + CHIPS; k++) {
-          if ((k == SIZE) || (map[i][k] != tempCell)) {
-//Нет ряда из CHIPS
-            break;
-          }
-          countWin++;
-        }
-        if (countWin == CHIPS) {
-//Есть ряд из CHIPS - конец игры
-          return true;
-        }
-//Смотрим вниз и вправо от текущей клетки
-        countWin = 0;
-        additionalCount = i;
-        for (int k = j; k < j + CHIPS; k++) {
-          if ((k == SIZE) || (additionalCount == SIZE) || (map[additionalCount][k] != tempCell)) {
-//Нет ряда из CHIPS
-            break;
-          }
-          countWin++;
-          additionalCount++;
-        }
-        if (countWin == CHIPS) {
-//Есть ряд из CHIPS - конец игры
-          return true;
-        }
-//Смотрим вниз и влево от текущей клетки
-        countWin = 0;
-        additionalCount = i;
-        for (int k = j; k > j - CHIPS; k--) {
-          if ((k == -1) || (additionalCount == SIZE) || (map[additionalCount][k] != tempCell)) {
-//Нет ряда из CHIPS
-            break;
-          }
-          countWin++;
-          additionalCount++;
-        }
-        if (countWin == CHIPS) {
-//Есть ряд из CHIPS - конец игры
-          return true;
-        }
-//Смотрим вниз от текущей клетки
-        countWin = 0;
-        for (int k = i; k < i + CHIPS; k++) {
-          if ((k == SIZE) || (map[k][j] != tempCell)) {
-//Нет ряда из CHIPS
-            break;
-          }
-          countWin++;
-        }
-        if (countWin == CHIPS) {
-//Есть ряд из CHIPS - конец игры
-          return true;
-        }
+  public static boolean checkWin(char playerSymbol) {
+    boolean checkLine, checkColumns, checkDiagonalA, checkDiagonalB;
+    for (int i = 0; i < map.length; i++) {
+      checkLine = true;
+      checkColumns = true;
+      checkDiagonalA = true;
+      checkDiagonalB = true;
+      for (int j = 0; j < map.length; j++) {
+        checkLine &= (map[i][j] == playerSymbol);
+        checkColumns &= (map[j][i] == playerSymbol);
+        checkDiagonalA &= (map[j][j] == playerSymbol);
+        checkDiagonalB &= (map[map.length - j - 1][j] == playerSymbol);
+      }
+      if (checkLine || checkColumns || checkDiagonalA || checkDiagonalB) {
+        return true;
       }
     }
     return false;
