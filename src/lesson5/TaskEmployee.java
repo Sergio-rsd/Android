@@ -33,5 +33,4 @@ public class TaskEmployee {
     }
     System.out.println("Всего: " + Employee.count);
   }
-
 }

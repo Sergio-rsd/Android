@@ -12,7 +12,7 @@ public class Employee {
 
   static int count = 0;
 
-  //конструктор для класса Employee
+  // конструктор для класса Employee
   public Employee(String name, String post, String email, String phone, int salary, int age) {
     this.name = name;
     this.post = post;
