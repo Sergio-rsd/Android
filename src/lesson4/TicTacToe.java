@@ -20,7 +20,7 @@ public class TicTacToe {
 
   private static final Scanner scanner = new Scanner(System.in);
   private static final Random random = new Random();
-  private static final boolean SILLY_MODE = false;
+  private static final boolean SILLY_MODE = false; // так себе, но тупой ПК
 //    private static final boolean SILLY_MODE = true; // тупой ПК
 
   public static void main(String[] args) {
@@ -52,7 +52,7 @@ public class TicTacToe {
   private static void setTheNumberOfChips() {
     System.out.println(
         "Укажите количество победных фишек (для поля 3X3 - 3 фишки)\nВсе равно поставим нужное количество :-)");
-    CHIPS = numberCheck();
+
     if (SIZE >= 3 && SIZE <= 5) {
       CHIPS = 3;
     } else if (SIZE >= 6 && SIZE <= 10) {
@@ -236,10 +236,9 @@ public class TicTacToe {
     boolean result = false;
     printMap();
     // проверка необходимости следующего хода
-    if (checkWin(playerSymbol)) {
+    if (checkWin()) {
       System.out.println("Победа за " + playerSymbol);
-      result = true;
-      return result;
+      return true;
     }
     if (isMapFull()) {
       System.out.println("Ничья, увы...");
@@ -262,159 +261,87 @@ public class TicTacToe {
     return result;
   }
 
-  // Метод проверки победы в игре
-  // Всего 8 комбинаций
-  // -- вроде работает
-
-/*  public static boolean checkWin(char playerSymbol) {
-    boolean checkLine, checkColumns, checkDiagonalA, checkDiagonalB;
-    for (int i = 0; i < map.length; i++) {
-      checkLine = true;
-      checkColumns = true;
-      checkDiagonalA = true;
-      checkDiagonalB = true;
-      for (int j = 0; j < map.length; j++) {
-        checkLine &= (map[i][j] == playerSymbol);
-        checkColumns &= (map[j][i] == playerSymbol);
-        checkDiagonalA &= (map[j][j] == playerSymbol);
-        checkDiagonalB &= (map[map.length - j - 1][j] == playerSymbol);
-      }
-      if (checkLine || checkColumns || checkDiagonalA || checkDiagonalB) {
-        return true;
-      }
-    }
-    return false;
-  }*/
-
   // проверка на победу для любого поля и любых фишек
-  public static boolean checkWin(char playerSymbol) {
-    System.out.println("Координаты последнего хода" + lastRowTurn + " " + lastColumnTurn);
+  public static boolean checkWin() {
+    System.out.println("Координаты последнего хода " + lastRowTurn + " " + lastColumnTurn);
 
-    boolean checkLine;
-    boolean checkColumn;
-    boolean checkDiagonalA;
-    boolean checkDiagonalB;
-
-    checkLine = chekLineWin(playerSymbol);
-    checkColumn = chekColumnWin(playerSymbol);
-    checkDiagonalA = chekDiagonalA(playerSymbol);
-
-    for (int i = 0; i < map.length; i++) {
-      checkLine = true;
-      checkColumn = true;
-      checkDiagonalA = true;
-      checkDiagonalB = true;
-      for (int j = 0; j < map.length; j++) {
-        checkLine &= (map[i][j] == playerSymbol);
-        checkColumn &= (map[j][i] == playerSymbol);
-        checkDiagonalA &= (map[j][j] == playerSymbol);
-        checkDiagonalB &= (map[map.length - j - 1][j] == playerSymbol);
-      }
-      if (checkLine || checkColumn || checkDiagonalA || checkDiagonalB) {
-        return true;
-      }
-    }
-    return false;
+    return checkWinAll();
   }
 
-  private static boolean chekDiagonalA(char playerSymbol) {
-    int countWin = 0;
-    int leftRow;
-    int leftColumn;
-    int rightRow;
-    int rightColumn;
-    // определяем верхнюю и нижнюю границу квадранта фишек - левую верхнюю точку диагонали и правую нижнюю точку диагонали по CHIPS
-    // верхняя левая точнка
-    if (lastColumnTurn - CHIPS + 1 < 0) {
-      leftColumn = 0;
-    } else {
-      leftColumn = lastColumnTurn - CHIPS + 1;
-    }
-    if (lastRowTurn - CHIPS + 1 < 0) {
-      leftRow = 0;
-    } else {
-      leftRow = lastRowTurn - CHIPS + 1;
-    }
-    // левая нижняя точка
-    if (lastRowTurn + CHIPS - 1 > SIZE) {
-      rightRow = SIZE;
-    } else {
-      rightRow = lastRowTurn + CHIPS - 1;
-    }
-    if (lastColumnTurn + CHIPS - 1 > SIZE) {
-      rightColumn = SIZE;
-    } else {
-      rightColumn = lastColumnTurn + CHIPS - 1;
-    }
-    // пробегаем по всему квадранту
-    for (int i = leftRow; i < rightRow +1; i++) {
-      if(map[i][i] == playerSymbol){
-        countWin++;
+  private static boolean checkWinAll() {
+
+//Проход по всему полю (расчет ведется для каждой клетки)
+    for (int i = 0; i < SIZE; i++) {
+      for (int j = 0; j < SIZE; j++) {
+//Пропускаем пустую клетку
+        if (map[i][j] == DOT_EMPTY) {
+          continue;
+        }
+        char tempCell = map[i][j];  //Значение текущей клетки
+
+        int countWin; //Текущая длина ряда
+
+        int additionalCount;  //Доп. счетчик
+//Смотрим вправо от текущей клетки
+        countWin = 0;
+        for (int k = j; k < j + CHIPS; k++) {
+          if ((k == SIZE) || (map[i][k] != tempCell)) {
+//Нет ряда из CHIPS
+            break;
+          }
+          countWin++;
+        }
         if (countWin == CHIPS) {
+//Есть ряд из CHIPS - конец игры
           return true;
         }
-      } else {
+//Смотрим вниз и вправо от текущей клетки
         countWin = 0;
+        additionalCount = i;
+        for (int k = j; k < j + CHIPS; k++) {
+          if ((k == SIZE) || (additionalCount == SIZE) || (map[additionalCount][k] != tempCell)) {
+//Нет ряда из CHIPS
+            break;
+          }
+          countWin++;
+          additionalCount++;
+        }
+        if (countWin == CHIPS) {
+
+//Есть ряд из CHIPS - конец игры
+          return true;
+        }
+//Смотрим вниз и влево от текущей клетки
+        countWin = 0;
+        additionalCount = i;
+        for (int k = j; k > j - CHIPS; k--) {
+          if ((k == -1) || (additionalCount == SIZE) || (map[additionalCount][k] != tempCell)) {
+//Нет ряда из CHIPS
+            break;
+          }
+          countWin++;
+          additionalCount++;
+        }
+        if (countWin == CHIPS) {
+//Есть ряд из CHIPS - конец игры
+          return true;
+        }
+//Смотрим вниз от текущей клетки
+        countWin = 0;
+        for (int k = i; k < i + CHIPS; k++) {
+          if ((k == SIZE) || (map[k][j] != tempCell)) {
+//Нет ряда из CHIPS
+            break;
+          }
+          countWin++;
+        }
+        if (countWin == CHIPS) {
+//Есть ряд из CHIPS - конец игры
+          return true;
+        }
       }
     }
     return false;
   }
 
-  private static boolean chekColumnWin(char playerSymbol) {
-    int countWin = 0;
-    int topRow;
-    int bottomRow;
-    // определяем верхнюю и нижнюю границу квадранта фишек - вверх и вниз по CHIPS
-    if (lastRowTurn - CHIPS + 1 < 0) {
-      topRow = 0;
-    } else {
-      topRow = lastRowTurn - CHIPS + 1;
-    }
-    if (lastRowTurn + CHIPS - 1 > SIZE) {
-      bottomRow = SIZE;
-    } else {
-      bottomRow = lastRowTurn + CHIPS - 1;
-    }
-    // пробегаем по вертикали
-    for (int i = topRow; i < bottomRow; i++) {
-      if (map[i][lastColumnTurn] == playerSymbol) {
-        countWin++;
-        if (countWin == CHIPS) {
-          return true;
-        }
-      } else {
-        countWin = 0;
-      }
-    }
-    return false;
-  }
-
-  private static boolean chekLineWin(char playerSymbol) {
-    int countWin = 0;
-    int leftColumn;
-    int rightColumn;
-    // определяем правую и левую границу квадранта фишек - вправо и влево по CHIPS
-    if (lastColumnTurn - CHIPS + 1 < 0) {
-      leftColumn = 0;
-    } else {
-      leftColumn = lastColumnTurn - CHIPS + 1;
-    }
-    if (lastColumnTurn + CHIPS - 1 > SIZE) {
-      rightColumn = SIZE;
-    } else {
-      rightColumn = lastColumnTurn + CHIPS - 1;
-    }
-    // пробегаем по горизонтали
-    for (int i = leftColumn; i < rightColumn; i++) {
-      if (map[lastRowTurn][i] == playerSymbol) {
-        countWin++;
-        if (countWin == CHIPS) {
-          return true;
-        }
-      } else {
-        countWin = 0;
-      }
-    }
-    return false;
-  }
 }
