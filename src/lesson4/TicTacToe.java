@@ -12,7 +12,6 @@ public class TicTacToe {
   private static final char DOT_EMPTY = '•'; //пустое простанство
   private static final char DOT_X = 'X'; // крестик
   private static final char DOT_O = 'O'; // нолик
-  //  private static final String HEADER_FIRST_MAP = "♥";
   private static final String SPACE_MAP = " ";
   private static int lastRowTurn = -1;
   private static int lastColumnTurn = -1;
@@ -75,7 +74,7 @@ public class TicTacToe {
     }
   }
 
-  // метод вывода игрового поля - оптимизирован
+  // метод вывода игрового поля - оптимизирован без отдельного заголовка
   private static void printMap() {
 
     for (int i = 0, k = 0; i < SIZE; i++, k++) {
