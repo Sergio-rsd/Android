@@ -1,49 +1,40 @@
 package lesson6;
 
 // Класс Коты
-public class Cat extends lesson6.Animal {
+class Cat extends lesson6.Animal {
 
-  private final String nameOwn;
-  protected double jumpMax = 2;
   protected int runMax = 200;
   protected int swimMax = 0;
+  static int countCat = 0;
 
-  public Cat(String nameOwn) {
-    this.nameOwn = nameOwn;
+  Cat(String name) {
+    super(name);
+    countCat++;
   }
 
-  public String getNameOwn() {
-    return nameOwn;
+  Cat(String name, int runMax) {
+    super(name);
+    this.runMax = runMax;
+    countCat++;
   }
 
-  public void catInfo() {
-    System.out.printf("Кот по кличке %s%n", nameOwn);
+  void catInfo() {
+    System.out.printf("У кота %s ограничение по бегу %d м и плавать он не может!%n", name, runMax);
   }
 
-  @Override
-  public void jump(double jumpHeight) {
-    if (jumpHeight > jumpMax) {
-      jumpHeight = jumpMax;
-      System.out.printf(badJump, nameOwn, jumpHeight);
+  void run(int runLength) {
+    if (Animal.run(runLength, runMax)) {
+      System.out.printf(goodRun, name, runLength);
     } else {
-      System.out.printf(goodJump, nameOwn, jumpHeight);
-    }
-  }
-
-  @Override
-  public void run(int runLength) {
-    if (runLength > runMax) {
       runLength = runMax;
-      System.out.printf(badRun, nameOwn, runLength);
-    } else {
-      System.out.printf(goodRun, nameOwn, runLength);
+      System.out.printf(badRun, name, runLength);
     }
   }
 
-  @Override
-  public void swim(int swimLength) {
-    if (swimLength >= swimMax) {
-      System.out.printf("%s не поплывет, утонет..%n", nameOwn);
+  void swim(int swimLength) {
+    if (!Animal.swim(swimLength, swimMax)) {
+      System.out.printf("%s не поплывет, утонет..%n", name);
     }
   }
+
 }

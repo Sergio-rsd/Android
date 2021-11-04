@@ -1,68 +1,54 @@
 package lesson6;
 
 // Класс Собаки
-public class Dog extends lesson6.Animal {
+class Dog extends lesson6.Animal {
 
-  private final String nameOwn;
-  private final String race;
-  protected double jumpMax = 0.5;
   protected int runMax = 500;
   protected int swimMax = 10;
 
-  public Dog(String nameOwn, String race) {
-    this.nameOwn = nameOwn;
-    this.race = race;
+  static int countDog = 0;
+
+  Dog(String name) {
+    super(name);
+    countDog++;
   }
 
-  public String getNameOwn() {
-    return nameOwn;
+  Dog(String name, int runMax, int swimMax) {
+    super(name);
+    this.runMax = runMax;
+    this.swimMax = swimMax;
+    countDog++;
   }
 
-  public String getRace() {
-    return race;
+  void setRunMax(int runMax) {
+    this.runMax = runMax;
   }
 
-  public void dogInfo() {
-    System.out.printf("Собака по кличке %s, породы %s%n", nameOwn, race);
+  void setSwimMax(int swimMax) {
+    this.swimMax = swimMax;
   }
 
-  public void runRace(String race) {
-    if (race.equals("Овчарка")) {
-      runMax = 600;
-    } else if (race.equals("Пудель")) {
-      runMax = 400;
-    }
+  void dogInfo() {
+    System.out.printf("У собаки по кличке %s ограничение по бегу %d м и заплыву %d м%n", name,
+        runMax, swimMax);
   }
 
-  @Override
-  public void jump(double jumpHeight) {
-    if (jumpHeight > jumpMax) {
-      jumpHeight = jumpMax;
-      System.out.printf(badJump, nameOwn, jumpHeight);
+  void run(int runLength) {
+    if (Animal.run(runLength, runMax)) {
+      System.out.printf(goodRun, name, runLength);
     } else {
-      System.out.printf(goodJump, nameOwn, jumpHeight);
-    }
-  }
-
-  @Override
-  public void run(int runLength) {
-    if (runLength > runMax) {
       runLength = runMax;
-      System.out.printf(badRun, nameOwn, runLength);
-    } else {
-      System.out.printf(goodRun, nameOwn, runLength);
+      System.out.printf(badRun, name, runLength);
     }
   }
 
-  @Override
-  public void swim(int swimLength) {
-    if (swimLength > swimMax) {
+  void swim(int swimLength) {
+    if (Animal.swim(swimLength, swimMax)) {
+      System.out.printf(goodSwim, name, swimLength);
+    } else {
       swimLength = swimMax;
-      System.out.printf(badSwim, nameOwn, swimLength);
-    } else {
-      System.out.printf(goodSwim, nameOwn, swimLength);
+      System.out.printf(badSwim, name, swimLength);
     }
   }
-
 
 }

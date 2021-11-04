@@ -1,25 +1,60 @@
 package lesson6;
 
-public class TaskAnimal {
+import java.util.Scanner;
+
+class TaskAnimal {
 
   public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
     Cat catOne = new Cat("Барсик");
-    Dog dogOne = new Dog("Шарик", "Пудель");
-    double jump = 0.2;
-    int run = 550;
-    int swim = 10;
-    System.out.printf(
-        "Попросим кота %s и собаку %s прыгнуть в высоту на %.1f м,%nпробежать %d м,%nпроплыть %d м%n",
-        catOne.getNameOwn(), dogOne.getNameOwn(), jump, run, swim);
-    catOne.catInfo();
-    catOne.jump(jump);
-    catOne.run(run);
-    catOne.swim(swim);
-    dogOne.runRace(dogOne.getRace());
-    dogOne.dogInfo();
-    dogOne.jump(jump);
-    dogOne.run(run);
-    dogOne.swim(swim);
+    Cat catTwo = new Cat("Пушок", 50);
+    Cat catTree = new Cat("Мурзик", 120);
+    Cat[] catTeam = {catOne, catTwo, catTree};
+    Dog dogOne = new Dog("Шарик");
+    Dog dogTwo = new Dog("Мухтар");
+    dogTwo.setRunMax(600);
+    Dog dogThree = new Dog("Жучка");
+    dogThree.setSwimMax(8);
+    Dog dogFour = new Dog("Амур", 250, 20);
+    Dog[] dogTeam = {dogOne, dogTwo, dogThree, dogFour};
+    int run;
+    int swim;
+    String catNames = "";
+    String dogNames = "";
+    for (Cat catBand : catTeam) {
+      catNames = catNames.concat(catBand.name + ", ");
+    }
+    for (Dog dogBand : dogTeam) {
+      dogNames = dogNames.concat(dogBand.name + ", ");
+    }
+    do {
+      System.out.println("Учим котов и собак бегать и плавать!");
+      System.out.printf(
+          "Попросим котов по именам %sи собак по именам %sпробежать и проплыть.%n",
+          catNames, dogNames);
+      System.out.print("Укажите дистанцию для пробега: ");
+      run = scanner.nextInt();
+      System.out.print("Укажите дистанцию для заплыва: ");
+      swim = scanner.nextInt();
+//      System.out.println();
+      for (Cat cat : catTeam) {
+        cat.run(run);
+        cat.swim(swim);
+        cat.catInfo();
+      }
+      for (Dog dog : dogTeam) {
+        dog.run(run);
+        dog.swim(swim);
+        dog.dogInfo();
+      }
+      System.out.print("Еще потренируем? (0 - нет, 1 - да): ");
+
+    } while (scanner.nextInt() != 0);
+    System.out.println("В тренировке учавстовали:");
+    System.out.printf("Всего котов: %d%n", Cat.countCat);
+    System.out.printf("Всего собак: %d%n", Dog.countDog);
+    System.out.printf("Всего животных: %d%n", Animal.contAnimal);
+    scanner.close();
   }
 
 }

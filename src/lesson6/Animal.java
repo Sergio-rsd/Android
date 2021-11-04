@@ -1,19 +1,29 @@
 package lesson6;
 
 // Класс животные
-public abstract class Animal {
+class Animal {
 
-  public abstract void jump(double jumpHeight);
+  String name;
+  static int contAnimal;
 
-  public abstract void run(int runLength);
+  // каждое животное имеет кличку
+  Animal(String name) {
+    this.name = name;
+    contAnimal++;
+  }
 
-  public abstract void swim(int swimLength);
+  // каждое животное бегает
+  static boolean run(int runLength, int runMax) {
+    return runLength <= runMax;
+  }
 
-  protected static String goodJump = "%s хорошо прыгает, легко прыгнет на %.1f м%n";
-  protected static String badJump = "%s не сможет прыгнуть выше %.1f м%n";
-  protected static String goodRun = "%s хорошо бегает, легко пробежит %d м%n";
-  protected static String badRun = "%s не сможет пробежать сразу дальше %d м, увы..%n";
-  protected static String goodSwim = "%s хорошо плавает и проплывает %d м%n";
-  protected static String badSwim = "%s вряд ли столько %d м проплывет, утонет..%n";
+  // каждое животное плавает (иногда)
+  static boolean swim(int swimLength, int swimMax) {
+    return swimLength <= swimMax;
+  }
 
+  static String goodRun = "%s хорошо бегает, легко пробежит %d м%n";
+  static String badRun = "%s не сможет пробежать сразу дальше %d м, увы..%n";
+  static String goodSwim = "%s хорошо плавает и проплывает %d м%n";
+  static String badSwim = "%s вряд ли %d м проплывет, утонет..%n";
 }
