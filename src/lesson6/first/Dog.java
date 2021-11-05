@@ -67,5 +67,4 @@ class Dog extends Animal {
     }
   }
 
-
 }

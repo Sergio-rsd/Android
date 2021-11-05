@@ -10,7 +10,7 @@ class TaskAnimal {
     int run = 550;
     int swim = 10;
     System.out.printf(
-        "Попросим кота %s и собак %s и %sпрыгнуть в высоту на %.1f м,%nпробежать %d м,%nпроплыть %d м%n",
+        "Попросим кота %s и собак %s и %s прыгнуть в высоту на %.1f м,%nпробежать %d м,%nпроплыть %d м%n",
         catOne.getNameOwn(), dogOne.getNameOwn(), dogTwo.getNameOwn(), jump, run, swim);
     catOne.catInfo();
     catOne.jump(jump);

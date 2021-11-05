@@ -36,7 +36,6 @@ class TaskAnimal {
       run = scanner.nextInt();
       System.out.print("Укажите дистанцию для заплыва: ");
       swim = scanner.nextInt();
-//      System.out.println();
       for (Cat cat : catTeam) {
         cat.run(run);
         cat.swim(swim);
@@ -50,7 +49,7 @@ class TaskAnimal {
       System.out.print("Еще потренируем? (0 - нет, 1 - да): ");
 
     } while (scanner.nextInt() != 0);
-    System.out.println("В тренировке учавстовали:");
+    System.out.println("В тренировке учавствовали:");
     System.out.printf("Всего котов: %d%n", Cat.countCat);
     System.out.printf("Всего собак: %d%n", Dog.countDog);
     System.out.printf("Всего животных: %d%n", Animal.contAnimal);
